@@ -6,19 +6,23 @@ Contact Email: pablotorresdev@gmail.com
 
 ## Project Description
 
-This project implements a microservice that provides weather information through a REST API. 
+This project implements a microservice that provides weather information through a REST API.
 The weather data is obtained from the public APIs provided by AccuWeather. The
 application retrieves the weather data, stores it in an H2 database, and returns the relevant information in JSON format.
 The database is used as a cache and to avoid exceeding the API rate limits.
 
 The microservice is built using Java 1.8, Spring Boot, Maven, and a h2 relational database.
 
+- Java 1.8 or higher installed on your machine. If you haven't installed Java yet, you can download it from the official
+  website: https://www.oracle.com/java/technologies/javase-downloads.html
+- Maven installed on your machine. If you haven't installed Maven yet, you can download it from the official website: https://maven.apache.org/download.cgi
+
 ## Project Setup
 
 To set up and configure the project, follow these steps:
 
 1. Clone the Git repository: https://github.com/pablotorresdev/provinciaSeguros.git
-2. Ensure Java 1.8 is installed on your system.
+2. Ensure Java 1.8 and Maven is installed on your system.
 3. Build the project using Maven:
    ```
    mvn clean install
@@ -73,6 +77,9 @@ mvn test
 
 ### Prerequisites
 
+- Java 1.8 or higher installed on your machine. If you haven't installed Java yet, you can download it from the official
+  website: https://www.oracle.com/java/technologies/javase-downloads.html
+- Maven installed on your machine. If you haven't installed Maven yet, you can download it from the official website: https://maven.apache.org/download.cgi
 - Docker installed on your machine. If you haven't installed Docker yet, you can download it from the official website: https://www.docker.com/get-started
 
 ### Docker Configuration
@@ -89,7 +96,13 @@ git clone https://github.com/pablotorresdev/provinciaSeguros.git
 cd .\provincia-seguros
 ```
 
-3. Build the Docker image:
+3. Build the project using Maven:
+
+```
+mvn clean install
+```
+
+4. Build the Docker image:
 
 ```
 docker build -t provincia-seguros .
