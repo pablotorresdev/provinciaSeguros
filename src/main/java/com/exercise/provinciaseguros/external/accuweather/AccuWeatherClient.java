@@ -1,6 +1,7 @@
 package com.exercise.provinciaseguros.external.accuweather;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.exercise.provinciaseguros.model.CurrentWeather;
+import com.exercise.provinciaseguros.model.WeatherEntity;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -31,10 +32,11 @@ public class AccuWeatherClient {
         this.objectMapper = new ObjectMapper();
     }
 
-    public CurrentWeather getCurrentWeather(String location) {
+    public Optional<WeatherEntity> getCurrentWeather(String location) {
         String url = baseUrl + "/currentconditions/v1/{locationKey}";
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url).queryParam("apikey", apiKey).queryParam("metric", true);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url)
+            .queryParam("apikey", apiKey).queryParam("metric", true);
 
         ResponseEntity<String> response = restTemplate.exchange(builder.buildAndExpand(location).toUri(),
             HttpMethod.GET,
@@ -47,26 +49,31 @@ public class AccuWeatherClient {
                 JsonNode root = objectMapper.readTree(responseBody);
                 if (root.isArray() && root.size() > 0) {
                     JsonNode weatherNode = root.get(0);
-                    return convertWeatherNodeToCurrentWeather(weatherNode);
+                    return Optional.of(convertWeatherNodeToCurrentWeather(weatherNode, location));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    private static CurrentWeather convertWeatherNodeToCurrentWeather(final JsonNode weatherNode) {
-        CurrentWeather currentWeather = new CurrentWeather();
-        currentWeather.setWeatherText(weatherNode.path("WeatherText").asText());
-        currentWeather.setHasPrecipitation(weatherNode.path("HasPrecipitation").asBoolean());
-        currentWeather.setPrecipitationType(weatherNode.path("PrecipitationType").asText());
+    WeatherEntity convertWeatherNodeToCurrentWeather(final JsonNode weatherNode, String location) {
+        WeatherEntity weatherEntity = new WeatherEntity();
+        weatherEntity.setLocalObservationDateTime(weatherNode.path("LocalObservationDateTime").asText());
+        weatherEntity.setLocation(location);
 
         JsonNode temperatureNode = weatherNode.path("Temperature").path("Metric");
         if (!temperatureNode.isMissingNode()) {
-            currentWeather.setTemperature(temperatureNode.path("Value").asDouble());
+            weatherEntity.setTemperature(temperatureNode.path("Value").asDouble());
         }
-        return currentWeather;
+
+        weatherEntity.setWeatherText(weatherNode.path("WeatherText").asText());
+        boolean hasPrecipitation = weatherNode.path("HasPrecipitation").asBoolean();
+        weatherEntity.setHasPrecipitation(hasPrecipitation);
+        weatherEntity.setPrecipitationType(hasPrecipitation ? weatherNode.path("PrecipitationType").asText() : "None");
+
+        return weatherEntity;
     }
 
 }
