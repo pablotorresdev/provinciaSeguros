@@ -31,6 +31,13 @@ public class WeatherController {
     @Value("${controller.interval.seconds}")
     private int intervalSeconds;
 
+    /**
+     * Get all locations with current weather
+     *
+     @return ResponseEntity with a list of WeatherResponse objects in JSON format.
+     If weather information is available, returns HTTP status 200 (OK) with the weather information.
+     If no weather information is available, returns HTTP status 204 (No Content).
+     */
     @GetMapping("/")
     public ResponseEntity<List<WeatherResponse>> getAllLocations() {
         List<WeatherEntity> weatherEntities = weatherRepository.findAll();
@@ -55,6 +62,14 @@ public class WeatherController {
         return weatherResponse;
     }
 
+    /**
+     * Get all weather information for a given location
+     *
+     * @param location the location to get weather information for
+     * @return ResponseEntity with a list of WeatherResponse objects in JSON format.
+     * If weather information is available, returns HTTP status 200 (OK) with the weather information.
+     * If no weather information is available, returns HTTP status 404 (Not Found).
+     */
     @GetMapping("/{location}")
     public ResponseEntity<List<WeatherResponse>> getAllWeatherForLocation(@PathVariable String location) {
         List<WeatherEntity> weatherEntities = weatherRepository.findByLocation(location);
@@ -68,6 +83,13 @@ public class WeatherController {
         }
     }
 
+    /**
+     * Get current weather information for a given location
+     * @param location the location to get weather information for
+     * @return ResponseEntity with a WeatherResponse object in JSON format.
+     * If weather information is available, returns HTTP status 200 (OK) with the weather information.
+     * If no weather information is available, returns HTTP status 404 (Not Found).
+     */
     @GetMapping("/current/{location}")
     public ResponseEntity<WeatherResponse> getCurrentWeather(@PathVariable String location) {
         List<WeatherEntity> findByLocationAndTimestampedAtList = weatherRepository.findByLocationWithTimestampedAtAfter(

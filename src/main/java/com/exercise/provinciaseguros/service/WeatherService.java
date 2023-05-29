@@ -14,6 +14,13 @@ public class WeatherService {
     @Autowired
     private AccuWeatherClient accuWeatherClient;
 
+    /**
+     * Get current weather for a location
+     *
+     * @param location  Location to get weather information
+     * @return Optional with a WeatherEntity object if weather information is available,
+     * or an empty Optional if no weather information is available.
+     */
     public Optional<WeatherEntity> getCurrentWeather(String location) {
         return accuWeatherClient.getCurrentWeather(location);
     }
