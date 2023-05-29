@@ -28,6 +28,9 @@ public class WeatherController {
     @Autowired
     private WeatherRepository weatherRepository;
 
+    /**
+     * Interval in seconds to update weather information
+     */
     @Value("${controller.interval.seconds}")
     private int intervalSeconds;
 
@@ -100,17 +103,21 @@ public class WeatherController {
         } else {
             Optional<WeatherEntity> optApiWeatherEntity = weatherService.getCurrentWeather(location);
             if (optApiWeatherEntity.isPresent()) {
-                WeatherEntity apiWeatherEntity = optApiWeatherEntity.get();
-                String time = apiWeatherEntity.getLocalObservationDateTime();
-
-                weatherRepository.findByLocationAndLocalObservationDateTime(location, time)
-                    .ifPresent(existingWeatherEntity -> apiWeatherEntity.setId(existingWeatherEntity.getId())); // Preserve the existing ID for update
-
-                WeatherEntity savedWeatherEntity = weatherRepository.save(apiWeatherEntity);
+                WeatherEntity savedWeatherEntity = upsertEntity(location, optApiWeatherEntity.get());
                 return ResponseEntity.ok(convertToWeatherResponse(savedWeatherEntity));
             }
         }
         return ResponseEntity.notFound().build();
+    }
+
+    private WeatherEntity upsertEntity(final String location, final WeatherEntity apiWeatherEntity) {
+        String time = apiWeatherEntity.getLocalObservationDateTime();
+
+        // Preserve the existing ID for update
+        weatherRepository.findByLocationAndLocalObservationDateTime(location, time)
+            .ifPresent(existingWeatherEntity -> apiWeatherEntity.setId(existingWeatherEntity.getId()));
+
+        return weatherRepository.save(apiWeatherEntity);
     }
 
 }

@@ -45,7 +45,8 @@ public class AccuWeatherClient {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url)
             .queryParam("apikey", apiKey).queryParam("metric", true);
 
-        ResponseEntity<String> response = restTemplate.exchange(builder.buildAndExpand(location).toUri(),
+        ResponseEntity<String> response = restTemplate.exchange(
+            builder.buildAndExpand(location).toUri(),
             HttpMethod.GET,
             null,
             String.class);

@@ -16,7 +16,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Entity
 @Table(name = "weather", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"location", "localObservationDateTime"})
+    @UniqueConstraint(columnNames = { "location", "localObservationDateTime" })
 })
 public class WeatherEntity {
 

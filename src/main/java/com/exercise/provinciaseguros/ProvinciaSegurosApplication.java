@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 @EntityScan("com.exercise.provinciaseguros.model")
 public class ProvinciaSegurosApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProvinciaSegurosApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ProvinciaSegurosApplication.class, args);
+    }
 
 }
