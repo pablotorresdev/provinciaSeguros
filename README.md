@@ -6,6 +6,7 @@ Contact Email: pablotorresdev@gmail.com
 
 ## Project Description
 
+
 This project implements a microservice that provides weather information through a REST API.
 The weather data is obtained from the public APIs provided by AccuWeather. The
 application retrieves the weather data, stores it in an H2 database, and returns the relevant information in JSON format.
